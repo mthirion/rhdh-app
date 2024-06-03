@@ -116,80 +116,80 @@ spec:
                 - mthirion
 
   steps:
-#    - id: template
-#      name: resolving ./skeleton from template directory
-#      action: fetch:template
-#      input:
-#        url: ./skeleton
-#        copyWithoutTemplating:
-#          - .github/workflows/*
-#        values:
-#          component_id: ${{ parameters.component_id }}
-#          description: ${{ parameters.description }}
-#          namespace: ${{ parameters.component_id }}-dev
-#          group_id: ${{ parameters.group_id }}
-#          artifact_id: ${{ parameters.artifact_id }}
-#          java_package_name: ${{ parameters.java_package_name }}
-#          owner: ${{ parameters.repo.owner }}
-#          cluster: .apps.ocp4.mthirion.eu
-#          host: ${{ parameters.repo.host }}
-#          destination: ${{ parameters.repo.owner }}/${{ parameters.component_id }}
-#          quay_destination: ${{ parameters.image_organization}}/${{ parameters.component_id }}
-#          port: 8080
+    - id: template
+      name: resolving ./skeleton from template directory
+      action: fetch:template
+      input:
+        url: ./skeleton
+        copyWithoutTemplating:
+          - .github/workflows/*
+        values:
+          component_id: ${{ parameters.component_id }}
+          description: ${{ parameters.description }}
+          namespace: ${{ parameters.component_id }}-dev
+          group_id: ${{ parameters.group_id }}
+          artifact_id: ${{ parameters.artifact_id }}
+          java_package_name: ${{ parameters.java_package_name }}
+          owner: ${{ parameters.repo.owner }}
+          cluster: .apps.ocp4.mthirion.eu
+          host: ${{ parameters.repo.host }}
+          destination: ${{ parameters.repo.owner }}/${{ parameters.component_id }}
+          quay_destination: ${{ parameters.image_organization}}/${{ parameters.component_id }}
+          port: 8080
 
-#    - id: publish
-#      name: Create app-specific github repository
-#      action: publish:github
-#      input:
-#        repoUrl: "${{ parameters.repo.host }}?owner=${{ parameters.repo.owner }}&repo=${{parameters.component_id}}"
-#        description: "rhdh test repo created"
-#        repoVisibility: public
+    - id: publish
+      name: Create app-specific github repository
+      action: publish:github
+      input:
+        repoUrl: "${{ parameters.repo.host }}?owner=${{ parameters.repo.owner }}&repo=${{parameters.component_id}}"
+        description: "rhdh test repo created"
+        repoVisibility: public
 
-#    - id: gitops-files
-#      name: Clone app-specific repository to resolve variables
-#      action: fetch:template
-#      input:
-#        url: ./manifests
-#        copyWithoutTemplating: []
-#        values:
-#          component_id: ${{ parameters.component_id }}
-#          description: ${{ parameters.description }}
-#          destination: https://${{ parameters.repo.host }}/${{ parameters.repo.owner }}/${{parameters.component_id}}-gitops.git
-#          source_repository: https://${{ parameters.repo.host }}/${{ parameters.repo.owner }}/${{parameters.component_id}}.git
-#          repository_name: ${{parameters.component_id}}
-#          git_owner: ${{ parameters.repo.owner }}
-#          cluster: .apps.ocp4.mthirion.eu
-#          namespace: ${{ parameters.component_id }}-dev
-#          image_registry: ${{ parameters.image_registry }}
-#          image_host: ${{ parameters.image_host }}
-#          image_organization: ${{ parameters.image_organization }}
-#          image_name: ${{ parameters.component_id }}
-#          image_tag: ${{ parameters.image_tag }}
-#          port: 8080
-#          repository_host: ${{ parameters.repo.host }}
-#          deployment_name: mydemo-quarkus-template
-#          user: ${{ user.entity.metadata.name }}
-#        targetPath: ./tenant-gitops
+    - id: gitops-files
+      name: Clone app-specific repository to resolve variables
+      action: fetch:template
+      input:
+        url: ./manifests
+        copyWithoutTemplating: []
+        values:
+          component_id: ${{ parameters.component_id }}
+          description: ${{ parameters.description }}
+          destination: https://${{ parameters.repo.host }}/${{ parameters.repo.owner }}/${{parameters.component_id}}-gitops.git
+          source_repository: https://${{ parameters.repo.host }}/${{ parameters.repo.owner }}/${{parameters.component_id}}.git
+          repository_name: ${{parameters.component_id}}
+          git_owner: ${{ parameters.repo.owner }}
+          cluster: .apps.ocp4.mthirion.eu
+          namespace: ${{ parameters.component_id }}-dev
+          image_registry: ${{ parameters.image_registry }}
+          image_host: ${{ parameters.image_host }}
+          image_organization: ${{ parameters.image_organization }}
+          image_name: ${{ parameters.component_id }}
+          image_tag: ${{ parameters.image_tag }}
+          port: 8080
+          repository_host: ${{ parameters.repo.host }}
+          deployment_name: mydemo-quarkus-template
+          user: ${{ user.entity.metadata.name }}
+        targetPath: ./tenant-gitops
 
-#    - id: publish-gitops
-#      name: Creating the Gitops repository on github
-#      action: publish:github
-#      input:
-#        repoUrl: "${{ parameters.repo.host }}?owner=${{ parameters.repo.owner }}&repo=${{parameters.component_id}}-gitops"
-#        title: gitops resources for ${{ parameters.component_id }}
-#        description: gitops resources for ${{ parameters.component_id }}
-#        sourcePath: ./tenant-gitops
-#        repoVisibility: public
+    - id: publish-gitops
+      name: Creating the Gitops repository on github
+      action: publish:github
+      input:
+        repoUrl: "${{ parameters.repo.host }}?owner=${{ parameters.repo.owner }}&repo=${{parameters.component_id}}-gitops"
+        title: gitops resources for ${{ parameters.component_id }}
+        description: gitops resources for ${{ parameters.component_id }}
+        sourcePath: ./tenant-gitops
+        repoVisibility: public
 
-#    - id: create-argocd-resources
-#      name: Create ArgoCD Resources
-#      action: argocd:create-resources
-#      input:
-#        appName: ${{ parameters.component_id }}-bootstrap
-#        argoInstance: argocd-local1
-#        namespace: openshift-gitops
-#        repoUrl: https://${{ parameters.repo.host }}/${{ parameters.repo.owner }}/${{ parameters.component_id }}-gitops.git
-#        path: 'argocd/'
+    - id: create-argocd-resources
+      name: Create ArgoCD Resources
+      action: argocd:create-resources
+      input:
+        appName: ${{ parameters.component_id }}-bootstrap
+        argoInstance: argocd-local1
+        namespace: openshift-gitops
+        repoUrl: https://${{ parameters.repo.host }}/${{ parameters.repo.owner }}/${{ parameters.component_id }}-gitops.git
+        path: 'argocd/'
 
     - id: register
       name: Register
